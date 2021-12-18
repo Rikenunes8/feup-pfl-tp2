@@ -21,19 +21,19 @@ cell_in_board(Row-Col) :-
 % empty_cell(+Row-Col, +Board)
 % Verifica se uma célula do tabuleiro nas coordenadas (Row, Col) está vazia, ou seja se está identificada com 0.
 empty_cell(Row-Col, Board) :- 
-    cell_in_board(Row-Col),
     nth0(Row, Board, RowCell),
     nth0(Col, RowCell, CellValue),
-    CellValue =:= 0.
+    CellValue =:= 0,
+    cell_in_board(Row-Col).
 
 % belongs_to(?Player, ?Row-Col, +Board)
 % Determina se uma célula do tabuleiro está ocupada pelo jogador, ou as casas todas ocupadas pelo jogador.
 belongs_to(Player, Row-Col, Board) :- 
-    cell_in_board(Row-Col),
     nth0(Row, Board, RowCell),
     nth0(Col, RowCell, CellValue),
     player_cellValue(Player, PlayerCellValue),
-    CellValue == PlayerCellValue.
+    CellValue == PlayerCellValue,
+    cell_in_board(Row-Col).
 
 
 
@@ -98,6 +98,28 @@ move(Board-CurrentPlayer, Row-Col-EndRow-EndCol, NewGameState) :-
     empty_cell(EndRow-EndCol, Board),
     valid_move(CurrentPlayer, Row-Col, EndRow-EndCol, Board),
     make_move(CurrentPlayer, Row-Col, EndRow-EndCol, Board, NewGameState).
+
+
+
+% build_moves(+Cell, +ListEndCell, -ListOfMoves)
+% Constrói uma lista de Moves agrupando a célula inicial com todas as atingíveis por movimentos válidos.
+build_moves(_, [], []).
+build_moves(Cell, [EndRow-EndCol | T], [Cell-EndRow-EndCol | M]) :-
+    build_moves(Cell, T, M).
+
+% valid_moves_by_cell(+GameState, -ListOfMoves)
+% Determina as células finais atingíveis por movimentos válidos para cada uma das células do jogador no tabuleiro.
+valid_moves_by_cell(Board-CurrentPlayer, Moves) :-
+    belongs_to(CurrentPlayer, PlayerCell, Board),
+    findall(EndCell, valid_move(CurrentPlayer, PlayerCell, EndCell, Board), AllEndCells),
+    sort(AllEndCells, AllUniqueEndCells),
+    build_moves(PlayerCell, AllUniqueEndCells, Moves).
+
+% valid_moves(+GameState, -ListOfMoves)
+% Obtenção de lista com todas os Moves possíveis para o jogador atual.
+valid_moves(GameState, ListOfMoves) :-
+    findall(MovesByCell, valid_moves_by_cell(GameState, MovesByCell), Moves),
+    append(Moves, ListOfMoves).
 
 
 
