@@ -85,9 +85,6 @@ board(5, [[ 1, 1, 1, 1, 1 ],
           [ 0, 0, 0, 2, 0 ],
           [ 2, 2, 2, 2, 2 ]]).
 
-          
-test_correct_move3(NewGameState) :- board(5, Board), move(Board-1, 3-2-4-1, NewGameState).
-
 player_cell(1, 1).
 player_cell(2, 2).
 
@@ -139,8 +136,9 @@ horse_move(Row-Column, NewRow-NewColumn) :-
 % é um horse move
 % ou um conjunto de outras casas do inimigo que pode usar para chegar à final vazia
 
-valid_move(_, Cell, EndCell, _) :-
-    horse_move(Cell, EndCell).
+valid_move(_, Cell, EndCell, Board) :-
+    horse_move(Cell, EndCell),
+    empty_cell(EndCell, Board).
 
 valid_move(Player, Cell, EndCell, Board) :-
     horse_move(Cell, JumpCell),
@@ -219,6 +217,7 @@ test_all_valid_moves(ValidMoves) :- board(4, Board), valid_move(1, 4-3, ValidMov
 
 test_correct_move1(NewGameState) :- board(4, Board), move(Board-1, 4-3-5-6, NewGameState).
 test_correct_move2(NewGameState) :- board(4, Board), move(Board-2, 7-1-5-0, NewGameState).
+test_correct_move3(NewGameState) :- board(5, Board), move(Board-1, 3-2-4-1, NewGameState).
 test_uncorrect_move1(NewGameState) :- board(4, Board), move(Board-1, 4-3-4-1, NewGameState).
 test_uncorrect_move2(NewGameState) :- board(4, Board), move(Board-1, 4-3-6-4, NewGameState).
 test_uncorrect_move3(NewGameState) :- board(4, Board), move(Board-2, 4-3-5-6, NewGameState).
