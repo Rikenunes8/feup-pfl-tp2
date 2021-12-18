@@ -36,9 +36,15 @@ O objetivo de cada jogador é atravessar o tabuleiro com cada uma das pedras e c
 
 ### Regras
 
-Alternadamente, a cada turno, um jogador apenas pode mover uma pedra. O movimento desta pedra deverá ser em forma de **L**, semelhante ao movimento de um cavalo num jogo de xadrez, movendo 2 casa num determinado sentido ortogonal, seguido de 1 casas na direção perpendicular ao mesmo. Este movimento deverá terminar sempre numa casa vazia, diretamente, por um único movimento, ou a partir de saltos consecutivos usando, para isso, as pedras do adversário. 
+Alternadamente, a cada turno, um jogador apenas pode mover uma pedra. O movimento desta pedra deverá ser em forma de **'L'**, semelhante ao movimento de um cavalo num jogo de xadrez, movendo 2 casa num determinado sentido ortogonal, seguido de 1 casas na direção perpendicular ao mesmo. Este movimento deverá terminar sempre numa casa vazia, diretamente, por um único movimento, ou a partir de saltos consecutivos usando, para isso, as pedras do adversário. 
 
+![Movimentos_da_pedra](imgs/explanation_description.png)
 
+*Legenda:*
+
+a) Movimento simples de uma `pedra branca` a partir dos possíveis **'L'**
+
+b) Movimento de uma `pedra preta` pelos possíveis **'L'** diretos e **'L'** que se obtêm pelo salto na pedra do branca
 
 ## Lógica do Jogo
 
@@ -58,7 +64,7 @@ significado de cada átomo (ie., como representam as diferentes peças))
 - representacao do tabuleiro + lista de listas + significado de cada atomo (0, 1, 2 - como representam as diferentes peças)
 - representacao do jogador atual
 - nao existe captura de peças e ja todas se encontram no tabuleiro desde o inicio do jogo
-- uma jogada é definida por um casa em branco e o conjunto de saltos pelas peças do adversario conta como uma só jogada
+- uma jogada é definida por um casa de inicio do player e casa final em branco e o conjunto de saltos pelas peças do adversario conta como uma só jogada
 - exemplis do estados de jogo inicial, intermédio e final
 
 ### 2. Visualização do estado de jogo

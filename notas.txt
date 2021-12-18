@@ -3,4 +3,28 @@ O projeto desenvolvido no contexto da cadeira de PFL, tem como objetivo a implem
 
 •	Garantido o seu funcionamento em Windows e Linux!
 •	Cuidado de nomear os predicados usados conforme pedido na descrição abaixo. 
-•	Todo o código deve ser devidamente comentado. (% por linhas e predicado)
+•	Todo o código deve ser devidamente comentado.
+
+
+/*
+definição da representação interna do estado do jogo, 
+implementação dos predicados de validação e execução de jogada,
+e de deteção de final de jogo
+*/
+
+% representação interna do GameState
+
+/*
+  0 1 2 3 4 
+0 -----------
+1 -----------
+2 -----------
+3 -----------
+
+MOVE : Row-Col-EndRow-End-Col 0-0
+translateCoords('a', 0), if needed
+
+GameState : Board-Player
+-> board
+-> player a jogar
+*/

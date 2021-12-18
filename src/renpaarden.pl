@@ -1,145 +1,67 @@
 :-use_module(library(lists)).
 
 
-/*
-definição da representação interna do estado do jogo, 
-implementação dos predicados de validação e execução de jogada,
-e de deteção de final de jogo
-*/
+% player_cellValue(+Player, ?CellValue)
+% Determina qual o código interno de representação de uma célula do jogador no tabuleiro.
+player_cellValue(1, 1).
+player_cellValue(2, 2).
 
-% representação interna do GameState
-
-/*
-  0 1 2 3 4 
-0 -----------
-1 -----------
-2 -----------
-3 -----------
-
-
-MOVE : Row-Column 0-0
-translateCoords('a', 0), if needed
-
-
-GameState : Board-Player
--> board
--> player a jogar
-*/
-
-
-board(0, [[ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ]]).
-
-board(1, [[ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ]]).
-
-board(2, [[ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]]).
-
-board(3, [[ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 1, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ]]).
-
-board(4, [[ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 1, 1, 0, 1, 1, 1, 1, 1, 1 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 1, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 2, 0, 0, 0, 0 ],
-          [ 2, 2, 2, 2, 0, 2, 2, 2, 2 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ]]).
-
-board(5, [[ 1, 1, 1, 1, 1 ],
-          [ 1, 1, 0, 1, 1 ],
-          [ 0, 0, 0, 0, 0 ],
-          [ 0, 0, 1, 1, 0 ],
-          [ 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 2, 0 ],
-          [ 2, 2, 2, 2, 2 ]]).
-
-player_cell(1, 1).
-player_cell(2, 2).
-
+% opponent_player(+Player, ?OpponentPlayer)
+% Determina qual o código do oponente do jogador identificado em Player.
 opponent_player(1, 2).
 opponent_player(2, 1).
 
 
-% move(+GameState, , +Move, -NewGameState)
 
-/*
-um movimento é valido se e só se for uma casa vazia e resultar de um movimento em L
-*/
+% cell_in_board(+Row-Col)
+% Verifica se as coordenadas de uma célula se encontram dentro dos limites do tabuleiro de jogo (9x9).
+cell_in_board(Row-Col) :-
+    Row >= 0, Row < 9, Col >= 0, Col < 9.
 
-cell_in_board(Row-Column) :-
-    Row >= 0, Row < 9, Column >= 0, Column < 9.
-
-empty_cell(Row-Column, Board) :- 
-    cell_in_board(Row-Column),
+% empty_cell(+Row-Col, +Board)
+% Verifica se uma célula do tabuleiro nas coordenadas (Row, Col) está vazia, ou seja se está identificada com 0.
+empty_cell(Row-Col, Board) :- 
+    cell_in_board(Row-Col),
     nth0(Row, Board, RowCell),
-    nth0(Column, RowCell, Cell),
-    Cell =:= 0.
+    nth0(Col, RowCell, CellValue),
+    CellValue =:= 0.
 
-belongs_to(Player, Row-Column, Board) :- 
-    cell_in_board(Row-Column),
+% belongs_to(?Player, ?Row-Col, +Board)
+% Determina se uma célula do tabuleiro está ocupada pelo jogador, ou as casas todas ocupadas pelo jogador.
+belongs_to(Player, Row-Col, Board) :- 
+    cell_in_board(Row-Col),
     nth0(Row, Board, RowCell),
-    nth0(Column, RowCell, Cell),
-    player_cell(Player, PlayerCell),
-    Cell == PlayerCell.
-
-% horse_move(+Row-Column, ?NewRow-NewColumn)
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row-2, NewColumn is Column-1, cell_in_board(NewRow-NewColumn).
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row-2, NewColumn is Column+1, cell_in_board(NewRow-NewColumn).
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row+2, NewColumn is Column-1, cell_in_board(NewRow-NewColumn).
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row+2, NewColumn is Column+1, cell_in_board(NewRow-NewColumn).
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row-1, NewColumn is Column-2, cell_in_board(NewRow-NewColumn).
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row-1, NewColumn is Column+2, cell_in_board(NewRow-NewColumn).
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row+1, NewColumn is Column-2, cell_in_board(NewRow-NewColumn).
-horse_move(Row-Column, NewRow-NewColumn) :-
-    NewRow is Row+1, NewColumn is Column+2, cell_in_board(NewRow-NewColumn).
+    nth0(Col, RowCell, CellValue),
+    player_cellValue(Player, PlayerCellValue),
+    CellValue == PlayerCellValue.
 
 
-% é um horse move
-% ou um conjunto de outras casas do inimigo que pode usar para chegar à final vazia
 
+% horse_move(+Row-Col, ?NewRow-NewCol)
+% Determina os movimentos em L a partir de uma célula que terminem dentro dos limites do tabuleiro.
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row-2, NewCol is Col-1, cell_in_board(NewRow-NewCol).
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row-2, NewCol is Col+1, cell_in_board(NewRow-NewCol).
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row+2, NewCol is Col-1, cell_in_board(NewRow-NewCol).
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row+2, NewCol is Col+1, cell_in_board(NewRow-NewCol).
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row-1, NewCol is Col-2, cell_in_board(NewRow-NewCol).
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row-1, NewCol is Col+2, cell_in_board(NewRow-NewCol).
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row+1, NewCol is Col-2, cell_in_board(NewRow-NewCol).
+horse_move(Row-Col, NewRow-NewCol) :-
+    NewRow is Row+1, NewCol is Col+2, cell_in_board(NewRow-NewCol).
+
+% valid_move(+Player, +Cell, ?EndCell, +Board)
+% Verifica se um movimento é válido (moviemento em L que termina numa célula vazia, 
+% ou sucessivos movimentos em L que saltam através de células onde se encontram pedras do adversário).
 valid_move(_, Cell, EndCell, Board) :-
     horse_move(Cell, EndCell),
     empty_cell(EndCell, Board).
-
 valid_move(Player, Cell, EndCell, Board) :-
     horse_move(Cell, JumpCell),
     opponent_player(Player, OpponentPlayer),
@@ -148,22 +70,29 @@ valid_move(Player, Cell, EndCell, Board) :-
     valid_move(Player, JumpCell, EndCell, AuxBoard).
 
 
-replace(Row-Column, Value, Board, BoardResult) :- 
-    nth0(Row, Board, BoardRow),
-    nth0(Column, BoardRow, _, DeletedBoardRow),                 % delete this element in list
-    nth0(Column, ReplacedBoardRow, Value, DeletedBoardRow),
-    nth0(Row, Board, _, DeletedBoard),
-    nth0(Row, BoardResult, ReplacedBoardRow, DeletedBoard).
+% replace(+Row-Col, +Value, +Board, -BoardResult)
+% Substitui o valor de uma célula do tabuleiro, eliminando o elemento a modificar 
+% e posteriormente inserindo-o com o valor pretendido ao nível da linha e do tabuleiro.
+replace(Row-Col, Value, Board, BoardResult) :- 
+    nth0(Row, Board, BoardRow),                                
+    nth0(Col, BoardRow, _, DeletedBoardRow),                 
+    nth0(Col, ReplacedBoardRow, Value, DeletedBoardRow),     
+    nth0(Row, Board, _, DeletedBoard),                          
+    nth0(Row, BoardResult, ReplacedBoardRow, DeletedBoard).     
+
+% make_move(+Player, +Cell, +EndCell, +Board, -NewGameState)
+% Executa um movimento no tabuleiro, substituindo o valor da célula a mover por 0 
+% e o valor da célula final pelo código que representa as células do jogador.
+% O resultado é o estado de jogo atualizado.
+make_move(Player, Cell, EndCell, Board, NewBoard-OpponentPlayer) :- 
+    replace(Cell, 0, Board, AuxBoard),                          
+    player_cellValue(Player, PlayerCellValue),                             
+    replace(EndCell, PlayerCellValue, AuxBoard, NewBoard),           
+    opponent_player(Player, OpponentPlayer).                     
 
 
-make_move(Player, Cell, EndCell, Board, NewGameState) :-
-    replace(Cell, 0, Board, Board1),
-    player_cell(Player, PlayerCell),
-    replace(EndCell, PlayerCell, Board1, NewBoard),
-    opponent_player(Player, OpponentPlayer),
-    NewGameState = NewBoard-OpponentPlayer.
-    
-
+% move(+GameState, +Move, -NewGameState)
+% Validação e execução de uma jogada obtendo o novo estado do jogo.
 move(Board-CurrentPlayer, Row-Col-EndRow-EndCol, NewGameState) :-
     belongs_to(CurrentPlayer, Row-Col, Board),
     empty_cell(EndRow-EndCol, Board),
@@ -172,30 +101,25 @@ move(Board-CurrentPlayer, Row-Col-EndRow-EndCol, NewGameState) :-
 
 
 
+% diff_1(+CellValue)
+% Verifica se o valor é diferente de 1.
+diff_1(CellValue) :- CellValue =\= 1.
+
+% diff_2(+CellValue)
+% Verifica se o valor é diferente de 2.
+diff_2(CellValue) :- CellValue =\= 2.
 
 
-
-% game_over(+GameState, -Winner)
-
-game_over(Board-CurrentPlayer, CurrentPlayer) :- 
-    check_win(CurrentPlayer, Board).
-game_over(Board-CurrentPlayer, OpponentPlayer) :- 
-    opponent_player(CurrentPlayer, OpponentPlayer),
-    check_win(OpponentPlayer, Board).
-
-diff_1(Cell) :- Cell =\= 1.
-diff_2(Cell) :- Cell =\= 2.
-
-% 1 - ganho se as 2 primeiras linhas da reversa for o meu simbolo so e nenhum mais
+% check_win(?Player, +Board)
+% Verifica se algum jogador tem todas as suas pedras no lado oposto do tabuleiro ao que começou.
+% O jogador 1 ganha quando tem todas as suas pedras nas duas linhas inferiores do tabuleiro.
 check_win(1, Board) :- 
     reverse(Board, BoardReverse),
     nth0(0, BoardReverse, Row0),
     nth0(1, BoardReverse, Row1),
     append(Row0, Row1, Rows),
     \+ some(diff_1, Rows).
-
-
-% 2 - ganho se as 2 primeiras linhas do board normal for o meu simbolo so e nada mais
+% O jogador 2 ganha quando tem todas as suas pedras nas duas linhas superiores do tabuleiro.
 check_win(2, Board) :- 
   nth0(0, Board, Row0),
   nth0(1, Board, Row1),
@@ -203,33 +127,10 @@ check_win(2, Board) :-
   \+ some(diff_2, Rows).
 
 
-
-
-
-
-test_no_winner(Winner) :- board(0, Board), game_over(Board-1, Winner).
-test_winner_1(Winner) :- board(1, Board), game_over(Board-1, Winner).
-test_winner_2(Winner) :- board(2, Board), game_over(Board-1, Winner).
-
-test_unvalid_move :- board(4, Board), valid_move(1, 4-3, 4-1, Board).
-test_valid_move :- board(4, Board), valid_move(1, 4-3, 5-6, Board).
-test_all_valid_moves(ValidMoves) :- board(4, Board), valid_move(1, 4-3, ValidMoves, Board).
-
-test_correct_move1(NewGameState) :- board(4, Board), move(Board-1, 4-3-5-6, NewGameState).
-test_correct_move2(NewGameState) :- board(4, Board), move(Board-2, 7-1-5-0, NewGameState).
-test_correct_move3(NewGameState) :- board(5, Board), move(Board-1, 3-2-4-1, NewGameState).
-test_uncorrect_move1(NewGameState) :- board(4, Board), move(Board-1, 4-3-4-1, NewGameState).
-test_uncorrect_move2(NewGameState) :- board(4, Board), move(Board-1, 4-3-6-4, NewGameState).
-test_uncorrect_move3(NewGameState) :- board(4, Board), move(Board-2, 4-3-5-6, NewGameState).
-
-viewTab([]).
-viewTab([H|T]) :-
-    printList(H),
-    viewTab(T).
-
-printList([]) :-
-    nl.
-printList([H|T]) :-
-    write(H),
-    write(' | '),
-    printList(T).
+% game_over(+GameState, -Winner)
+% Verificação da situação final do jogo, com determinação do vencedor.
+game_over(Board-CurrentPlayer, CurrentPlayer) :- 
+    check_win(CurrentPlayer, Board).
+game_over(Board-CurrentPlayer, OpponentPlayer) :- 
+    opponent_player(CurrentPlayer, OpponentPlayer),
+    check_win(OpponentPlayer, Board).
