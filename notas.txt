@@ -1,0 +1,6 @@
+Projeto:
+O projeto desenvolvido no contexto da cadeira de PFL, tem como objetivo a implementação de um jogo de tabuleiro para dois jogadores em linguagem Prolog. Um jogo de tabuleiro caracteriza-se prelo tipo de tabuleiro e peças, regras de movimentação das peças (jogadas possíveis) e condições de terminação do jogo com derrota, vitória ou empate. O jogo deve permitir vários modos de utilização (com jogador humano e/ou artificial), apresentando uma interface com o utilizador em modo de texto.
+
+•	Garantido o seu funcionamento em Windows e Linux!
+•	Cuidado de nomear os predicados usados conforme pedido na descrição abaixo. 
+•	Todo o código deve ser devidamente comentado. (% por linhas e predicado)
