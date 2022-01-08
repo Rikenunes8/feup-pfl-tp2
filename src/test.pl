@@ -1,4 +1,5 @@
-:- consult('renpaarden.pl').
+:- consult('logic.pl').
+:- consult('io.pl').
 
 % função de teste
 
@@ -32,15 +33,14 @@ board(2, [[ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
           [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
           [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]]).
 
-board(3, [[ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 1, 0, 0, 0, 0, 0, 0, 0, 0 ],
-          [ 0, 1, 1, 1, 1, 1, 1, 1, 1 ],
-          [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ]]).
+board(3, [[ 2, 2, 2, 2, 2, 2, 2, 2 ],
+          [ 2, 2, 2, 2, 2, 2, 2, 2 ],
+          [ 0, 0, 0, 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0, 0, 0, 0 ],
+          [ 1, 0, 0, 0, 0, 0, 0, 0 ],
+          [ 0, 1, 1, 1, 1, 1, 1, 1 ],
+          [ 1, 1, 1, 1, 1, 1, 1, 1 ]]).
 
 board(4, [[ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
           [ 1, 1, 0, 1, 1, 1, 1, 1, 1 ],
@@ -54,9 +54,7 @@ board(4, [[ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
 
 board(5, [[ 1, 1, 1, 1, 1 ],
           [ 1, 1, 0, 1, 1 ],
-          [ 0, 0, 0, 0, 0 ],
           [ 0, 0, 1, 1, 0 ],
-          [ 0, 0, 0, 0, 0 ],
           [ 0, 0, 0, 2, 0 ],
           [ 2, 2, 2, 2, 2 ]]).
 
@@ -74,6 +72,8 @@ test_correct_move3(NewGameState) :- board(5, Board), move(Board-1, 3-2-4-1, NewG
 test_uncorrect_move1(NewGameState) :- board(4, Board), move(Board-1, 4-3-4-1, NewGameState).
 test_uncorrect_move2(NewGameState) :- board(4, Board), move(Board-1, 4-3-6-4, NewGameState).
 test_uncorrect_move3(NewGameState) :- board(4, Board), move(Board-2, 4-3-5-6, NewGameState).
+
+test_ia(L) :- board(4, Board), valid_moves(Board-1, L).
 
 viewTab([]).
 viewTab([H|T]) :-
