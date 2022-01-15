@@ -12,7 +12,7 @@ opponent_player(2, 1).
 
 
 % cell_in_board(+Cell)
-% Verifica se as coordenadas de uma célula se encontram dentro dos limites do tabuleiro de jogo (9x9).
+% Verifica se as coordenadas de uma célula se encontram dentro dos limites do tabuleiro de jogo.
 cell_in_board(Row-Col) :-
     size(Size),
     Row >= 0, Row < Size, Col >= 0, Col < Size.
@@ -37,7 +37,7 @@ belongs_to(Player, Row-Col, Board) :-
 
 
 % horse_move(+Cell, ?NewCell)
-% Determina os movimentos em L a partir de uma célula que terminem dentro dos limites do tabuleiro.
+% Determina os movimentos em L, a partir de uma célula, que terminam dentro dos limites do tabuleiro.
 horse_move(Row-Col, NewRow-NewCol) :-
     NewRow is Row-2, NewCol is Col-1, cell_in_board(NewRow-NewCol).
 horse_move(Row-Col, NewRow-NewCol) :-
@@ -120,12 +120,16 @@ valid_moves(GameState, ListOfMoves) :-
     append(Moves, ListOfMoves).
 
 
-row_value(1, Row, Value) :-
+% row_weight(+Player, +Row, -Weight)
+% Determina o peso correspondente a uma linha no tabuleiro de índice Row, de acordo com um jogador (Player).
+% O peso é tanto menor quanto mais próximo estiver o jogador do lado oposto do tabuleiro onde começou, ou seja, mais próximo de ganhar o jogo. 
+row_weight(1, Row, Weight) :-
     size(Size),
-    Value is Size-1-Row.
-row_value(2, Row, Row).
+    Weight is Size-1-Row.
+row_weight(2, Row, Row).
 
 % count_player_cells(+Row, +Player, -NumberOfCells)
+% Devolve o numero de células na linha cujo valor é igual a Player.
 count_player_cells([], _, 0).
 count_player_cells([Player|T], Player, N) :- 
     !, count_player_cells(T, Player, NT), 
@@ -133,16 +137,18 @@ count_player_cells([Player|T], Player, N) :-
 count_player_cells([_|T], Player, N) :- 
     count_player_cells(T, Player, N).
 
+% board_value(+Board, +LineNumber, +Player, -Value)
+% Determina o valor do tabuleiro - somatório do produto do peso da linha pelo nº de celulas do jogador nessa mesma linha.
 board_value([], _, _, 0).
 board_value([Row | Rest], N, Player, Value) :-
-    row_value(Player, N, ValueRow),
+    row_weight(Player, N, Weight),
     count_player_cells(Row, Player, NCells),
     N1 is N + 1,
     board_value(Rest, N1, Player, ValueRest),
-    Value is ValueRest + (ValueRow * NCells).
+    Value is ValueRest + (Weight * NCells).
 
 % value(+GameState, +Player, -Value).
-% melhor jogada é a de menor valor
+% Computa e devolve o valor do tabuleiro.
 value(Board-_, Player, Value) :-
     board_value(Board, 0, Player, Value).
     
