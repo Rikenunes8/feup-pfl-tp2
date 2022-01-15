@@ -1,5 +1,3 @@
-:-use_module(library(lists)).
-
 
 % player_cellValue(+Player, ?CellValue)
 % Determina qual o código interno de representação de uma célula do jogador no tabuleiro.
@@ -16,7 +14,8 @@ opponent_player(2, 1).
 % cell_in_board(+Cell)
 % Verifica se as coordenadas de uma célula se encontram dentro dos limites do tabuleiro de jogo (9x9).
 cell_in_board(Row-Col) :-
-    Row >= 0, Row < 9, Col >= 0, Col < 9.
+    size(Size),
+    Row >= 0, Row < Size, Col >= 0, Col < Size.
 
 % empty_cell(+Cell, +Board)
 % Verifica se uma célula do tabuleiro nas coordenadas (Row, Col) está vazia, ou seja se está identificada com 0.
@@ -120,6 +119,33 @@ valid_moves(GameState, ListOfMoves) :-
     findall(MovesByCell, valid_moves_by_cell(GameState, MovesByCell), Moves),
     append(Moves, ListOfMoves).
 
+
+row_value(1, Row, Value) :-
+    size(Size),
+    Value is Size-1-Row.
+row_value(2, Row, Row).
+
+% count_player_cells(+Row, +Player, -NumberOfCells)
+count_player_cells([], _, 0).
+count_player_cells([Player|T], Player, N) :- 
+    !, count_player_cells(T, Player, NT), 
+    N is NT + 1.
+count_player_cells([_|T], Player, N) :- 
+    count_player_cells(T, Player, N).
+
+board_value([], _, _, 0).
+board_value([Row | Rest], N, Player, Value) :-
+    row_value(Player, N, ValueRow),
+    count_player_cells(Row, Player, NCells),
+    N1 is N + 1,
+    board_value(Rest, N1, Player, ValueRest),
+    Value is ValueRest + (ValueRow * NCells).
+
+% value(+GameState, +Player, -Value).
+% melhor jogada é a de menor valor
+value(Board-_, Player, Value) :-
+    board_value(Board, 0, Player, Value).
+    
 
 
 % diff_1(+CellValue)
