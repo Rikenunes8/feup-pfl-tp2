@@ -33,6 +33,32 @@ ask_menu_option(Option) :-
   between(1, 5, Option), !.
 
 
+% board_size(?Limit, ?Value)
+% Faz corresponder o tamanho limite do tabuleiro a um limite (min/max).
+board_size(min, 5).
+board_size(max, 9).
+
+% ask_board_size(-Size)
+% Pergunta ao utilizador o tamanho desejado para o tabuleiro até obter uma resposta dentro dos limites de tamanho de um tabuleiro.
+ask_board_size(Size) :-
+  repeat, 
+  board_size(min, Min), board_size(max, Max),
+  write('Board Size ['), write(Min), write(' to '), write(Max), write(']: '),
+  get_code(S), peek_code(Enter), skip_line, Enter = 10,
+  Size is S-48,
+  between(Min, Max, Size), !.
+
+
+% ask_ai_level(-Level, +Text)
+% Pergunta ao utilizador o nível da IA até obter como resposta o valor 1 ou 2.
+ask_ai_level(Level, Text) :-
+  repeat,
+  write(Text),
+  get_code(L), peek_code(Enter), skip_line, Enter = 10,
+  Level is L-48,
+  between(1, 2, Level), !.
+
+
 % display_game(+GameState)
 % Visualização do jogo - título e respetivo tabuleiro.
 display_game(Board-_) :-
@@ -91,31 +117,6 @@ display_turn(Player) :-
   cell_code(Player, Code), 
   format('Player\'s Turn: ~c ~n~n~n', [Code]).
 
-
-% board_size(?Limit, ?Value)
-% Faz corresponder o tamanho limite do tabuleiro a um limite (min/max).
-board_size(min, 5).
-board_size(max, 9).
-
-% ask_board_size(-Size)
-% Pergunta ao utilizador o tamanho desejado para o tabuleiro até obter uma resposta dentro dos limites de tamanho de um tabuleiro.
-ask_board_size(Size) :-
-  repeat, 
-  board_size(min, Min), board_size(max, Max),
-  write('Board Size ['), write(Min), write(' to '), write(Max), write(']: '),
-  get_code(S), peek_code(Enter), skip_line, Enter = 10,
-  Size is S-48,
-  between(Min, Max, Size), !.
-
-
-% ask_ai_level(-Level, +Text)
-% Pergunta ao utilizador o nível da IA até obter como resposta o valor 1 ou 2.
-ask_ai_level(Level, Text) :-
-  repeat,
-  write(Text),
-  get_code(L), peek_code(Enter), skip_line, Enter = 10,
-  Level is L-48,
-  between(1, 2, Level), !.
 
 
 % ask_coord(+Text, +Size, -Cell)
