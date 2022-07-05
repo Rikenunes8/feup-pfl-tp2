@@ -1,12 +1,16 @@
 # PFL_TP2_T7_Repaarden5
 
+Project for the Functional and Logical Programming course @ FEUP - 2021/2022
+
+**Grade:** 19.6
+
 ## Identificação
 
 **Jogo** : Renpaarden
 
 **Grupo** (T7_Repaarden5): 
 
-| Número mecanográfico | Nome Completo                    | Contrinuição |
+| Número mecanográfico | Nome Completo                    | Contribuição |
 | :------------------- | :------------------------------- | :----------: |
 | 201906852            | Henrique Ribeiro Nunes           | 50 %         |
 | 201905427            | Patricia do Carmo Nunes Oliveira | 50 %         |
