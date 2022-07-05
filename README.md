@@ -2,6 +2,8 @@
 
 Project for the Functional and Logical Programming course @ FEUP - 2021/2022
 
+Implementation of the game Reenparden in Prolog.
+
 **Grade:** 19.6
 
 ## Identificação
